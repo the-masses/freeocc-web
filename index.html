@@ -1,0 +1,774 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="FreeOcc: Training-Free Embodied Open-Vocabulary Occupancy Prediction">
+  <meta property="og:title" content="FreeOcc: Training-Free Embodied Open-Vocabulary Occupancy Prediction">
+  <meta property="og:description" content="Training-free embodied open-vocabulary occupancy prediction from RGB or RGB-D sequences.">
+  <meta property="og:image" content="assets/fig1.png">
+  <title>FreeOcc</title>
+  <style>
+    :root {
+      --text: #222;
+      --muted: #555;
+      --light: #f6f6f6;
+      --line: #e2e2e2;
+      --link: #3273dc;
+      --dark: #363636;
+      --max: 1060px;
+      --wide: 1240px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background: #fff;
+      font-family: "Google Sans", "Noto Sans", Arial, sans-serif;
+      font-size: 17px;
+      line-height: 1.62;
+    }
+
+    a {
+      color: var(--link);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    .hero {
+      padding: 48px 20px 28px;
+      text-align: center;
+    }
+
+    .container {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .wide-container {
+      max-width: var(--wide);
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .full-container {
+      max-width: 1520px;
+      margin: 0 auto;
+      padding: 0 14px;
+    }
+
+    .publication-title {
+      max-width: 1120px;
+      margin: 0 auto 16px;
+      font-size: clamp(2rem, 4.8vw, 3.15rem);
+      font-weight: 700;
+      line-height: 1.18;
+    }
+
+    .venue {
+      display: block;
+      margin-bottom: 18px;
+      color: #b00020;
+      font-size: 1.32rem;
+      font-weight: 700;
+    }
+
+    .authors {
+      margin: 0 auto;
+      font-size: 1.16rem;
+      line-height: 1.9;
+    }
+
+    .affiliations {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 1.04rem;
+    }
+
+    .notes {
+      margin-top: 4px;
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 98px;
+      padding: 9px 18px;
+      border-radius: 999px;
+      background: var(--dark);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .button:hover {
+      color: #fff;
+      text-decoration: none;
+      background: #111;
+    }
+
+    .button.disabled {
+      cursor: default;
+      background: #8a8a8a;
+      opacity: 0.62;
+      pointer-events: none;
+    }
+
+    .nav {
+      padding: 12px 20px;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: #fafafa;
+      text-align: center;
+    }
+
+    .nav a {
+      display: inline-block;
+      margin: 3px 10px;
+      color: #333;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .section {
+      padding: 38px 0;
+    }
+
+    .section.gray {
+      background: #fff;
+    }
+
+    .section.compact {
+      padding-top: 24px;
+    }
+
+    .title {
+      margin: 0 0 18px;
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .subtitle {
+      max-width: 850px;
+      margin: -8px auto 22px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 1.02rem;
+    }
+
+    .content {
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: justify;
+    }
+
+    .content p {
+      margin: 0 0 1rem;
+    }
+
+    .highlights {
+      max-width: 900px;
+      margin: 0 auto;
+      padding-left: 1.3rem;
+      text-align: justify;
+    }
+
+    .highlights li {
+      margin-bottom: 10px;
+    }
+
+    .artifact {
+      margin: 0 auto 68px;
+    }
+
+    .artifact a.preview-link {
+      display: block;
+    }
+
+    .artifact img {
+      margin: 0 auto;
+      border: 0;
+      border-radius: 0;
+      background: #fff;
+      box-shadow: none;
+    }
+
+    .artifact.figure-wide img {
+      width: 100%;
+    }
+
+    .artifact.figure-teaser {
+      max-width: 1500px;
+    }
+
+    .artifact.figure-teaser img {
+      width: 100%;
+    }
+
+    .artifact.figure-medium {
+      max-width: 960px;
+    }
+
+    .artifact.figure-medium img {
+      max-height: 760px;
+      object-fit: contain;
+    }
+
+    .artifact.table-compact {
+      max-width: 460px;
+    }
+
+    .artifact.table-compact img {
+      max-height: 300px;
+      object-fit: contain;
+    }
+
+    .artifact.figure-tall {
+      max-width: 920px;
+    }
+
+    .artifact.figure-tall img {
+      max-height: 980px;
+      object-fit: contain;
+    }
+
+    .demo-video {
+      max-width: 920px;
+      margin: 26px auto 84px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .demo-video video {
+      display: block;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      height: auto;
+      margin: 0 auto;
+      background: #fff;
+      object-fit: cover;
+    }
+
+    .caption {
+      max-width: 980px;
+      margin: 10px auto 0;
+      color: #333;
+      text-align: justify;
+      font-size: 18px;
+      line-height: 1.5;
+    }
+
+    .caption strong {
+      font-weight: 700;
+    }
+
+    .table-image {
+      max-width: 100%;
+    }
+
+    .table-image img {
+      width: auto;
+      max-height: 720px;
+      object-fit: contain;
+    }
+
+    .tables-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 46px;
+      align-items: start;
+      max-width: var(--wide);
+      margin: 0 auto 84px;
+      padding: 0 20px;
+    }
+
+    .tables-row.after-wide-table {
+      margin-top: 0;
+    }
+
+    .tables-row.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .tables-row .artifact {
+      margin-bottom: 0;
+    }
+
+    .tables-row .caption {
+      font-size: 18px;
+    }
+
+    .aligned-row .artifact {
+      display: flex;
+      height: 100%;
+      flex-direction: column;
+    }
+
+    .media-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .media-box img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .table-pair .media-box {
+      height: 390px;
+    }
+
+    .figure-pair .media-box {
+      height: 610px;
+    }
+
+    .supp-table-row .media-box {
+      height: 280px;
+    }
+
+    .figures-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 46px;
+      align-items: start;
+      max-width: var(--wide);
+      margin: 0 auto 84px;
+      padding: 0 20px;
+    }
+
+    .figures-row .artifact {
+      margin-bottom: 0;
+    }
+
+    .section-label {
+      margin: 0 auto 18px;
+      color: #777;
+      text-align: center;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    pre {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 18px;
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #f7f7f7;
+      color: #222;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    footer {
+      padding: 32px 20px 42px;
+      color: #777;
+      text-align: center;
+      font-size: 0.92rem;
+    }
+
+    @media (max-width: 980px) {
+      .tables-row,
+      .tables-row.three,
+      .figures-row {
+        grid-template-columns: 1fr;
+      }
+
+      .tables-row .caption,
+      .figures-row .caption {
+        font-size: 0.96rem;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .hero {
+        padding-top: 34px;
+      }
+
+      .authors {
+        font-size: 1.05rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <section class="hero">
+    <div class="container">
+      <h1 class="publication-title">FreeOcc: Training-Free Embodied Open-Vocabulary Occupancy Prediction</h1>
+      <span class="venue">RSS 2026</span>
+
+      <div class="authors">
+        <span><a href="https://the-masses.github.io/">Zeyu Jiang</a><sup>*1</sup></span>,
+        <span><a href="https://scholar.google.com/citations?user=FZ3jPs4AAAAJ&amp;hl=zh-CN">Changqing Zhou</a><sup>*1</sup></span>,
+        <span><a href="https://xingxingzuo.github.io/">Xingxing Zuo</a><sup>2</sup></span>,
+        <span><a href="https://changhao-chen.github.io/">Changhao Chen</a><sup>1✉</sup></span>
+      </div>
+
+      <div class="affiliations">
+        <sup>1</sup>The Hong Kong University of Science and Technology (Guangzhou)&nbsp;&nbsp;
+        <sup>2</sup>MBZUAI
+      </div>
+      <div class="notes"><sup>*</sup>Equal contribution. <sup>✉</sup>Corresponding author.</div>
+
+      <div class="button-row">
+        <a class="button disabled" href="#">Paper</a>
+        <a class="button disabled" href="#">Arxiv</a>
+        <a class="button disabled" href="#">Code</a>
+        <a class="button disabled" href="#">Benchmark</a>
+        <a class="button" href="#bibtex">BibTeX</a>
+      </div>
+    </div>
+  </section>
+
+  <nav class="nav" aria-label="Page navigation">
+    <a href="#abstract">Abstract</a>
+    <a href="#main-paper">Main Paper</a>
+    <a href="#results">Results</a>
+    <a href="#supplementary">Supplementary</a>
+    <a href="#bibtex">BibTeX</a>
+  </nav>
+
+  <section class="section" id="abstract">
+    <div class="container">
+      <h2 class="title">Abstract</h2>
+      <div class="content">
+        <p>
+          Existing learning-based occupancy prediction methods rely on large-scale 3D annotations and generalize poorly across environments.
+          We present FreeOcc, a training-free framework for open-vocabulary occupancy prediction from monocular or RGB-D sequences.
+          Unlike prior approaches that require voxel-level supervision and ground-truth camera poses, FreeOcc operates without 3D annotations,
+          pose ground truth, or any learning stage. FreeOcc incrementally builds a globally consistent occupancy map via a four-layer pipeline: a SLAM backbone estimates poses and
+          sparse geometry; a geometrically consistent Gaussian update constructs dense 3D Gaussian maps; open-vocabulary semantics from
+          off-the-shelf vision-language models are associated with Gaussian primitives; and a probabilistic Gaussian-to-occupancy projection
+          produces dense voxel occupancy. Despite being entirely training-free and pose-agnostic, FreeOcc achieves over 2x improvements in
+          IoU and mIoU on EmbodiedOcc-ScanNet compared to prior self-supervised methods. We further introduce ReplicaOcc, a benchmark for
+          indoor open-vocabulary occupancy prediction, and show that FreeOcc transfers zero-shot to novel environments, substantially outperforming both supervised and self-supervised baselines.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section gray">
+    <div class="container">
+      <h2 class="title">Highlights</h2>
+      <ol class="highlights">
+        <li><b>Training-free occupancy prediction.</b> FreeOcc requires no occupancy annotations, semantic annotations, ground-truth poses, or task-specific training.</li>
+        <li><b>Open-vocabulary 3D mapping.</b> Language-aligned features are associated with 3D Gaussian primitives and propagated to occupancy voxels.</li>
+        <li><b>Geometrically consistent Gaussian construction.</b> SLAM-guided initialization and anchored Gaussian updates improve spatial consistency for occupancy mapping.</li>
+        <li><b>ReplicaOcc benchmark.</b> A test-only benchmark evaluates zero-shot open-vocabulary occupancy prediction in indoor embodied environments.</li>
+      </ol>
+    </div>
+  </section>
+
+  <main id="main-paper">
+    <section class="section">
+      <div class="wide-container">
+        <p class="section-label">Main Paper</p>
+        <figure class="artifact figure-teaser">
+          <a class="preview-link" href="assets/fig1.pdf">
+            <img src="assets/fig1.png" alt="FreeOcc teaser figure" loading="lazy">
+          </a>
+          <figcaption class="caption">
+            FreeOcc is a training-free paradigm for open-vocabulary occupancy prediction. It eliminates the need for occupancy, pose, and semantic annotations, and incrementally constructs four-layer maps using only monocular or RGB-D image sequences. The right panel illustrates the benefit of open-vocabulary reasoning on EmbodiedOcc-ScanNet: the green boxes corresponding to “window” and “chair” are correctly identified and localized by FreeOcc, whereas the ground-truth occupancy labels (red boxes) coarsely classify them as “wall” and “floor,” respectively, despite clear visual evidence.
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section gray">
+      <div class="wide-container">
+        <h2 class="title">Methodology</h2>
+        <p class="subtitle">FreeOcc builds a four-layer representation for online open-vocabulary occupancy prediction.</p>
+        <figure class="artifact figure-wide">
+          <a class="preview-link" href="assets/fig2.pdf">
+            <img src="assets/fig2.png" alt="Framework overview of FreeOcc" loading="lazy">
+          </a>
+          <figcaption class="caption">
+            <b>Framework Overview of FreeOcc.</b> FreeOcc incrementally constructs a multi-layer map for online open-vocabulary occupancy prediction. <b>Layer 1:</b> A SLAM backbone processes monocular or RGB-D image sequences to estimate camera poses and sparse/semi-dense point cloud maps. <b>Layer 2:</b> Dense 3D Gaussian Splatting (3DGS) maps are constructed via SLAM-guided point initialization and a geometrically consistent Gaussian update strategy. <b>Layer 3:</b> Open-vocabulary semantic features are associated with Gaussian primitives using a vision-language model, forming a language-embedded 3D Gaussian semantic map. <b>Layer 4:</b> The semantic Gaussian map is projected into a dense voxel occupancy representation through probabilistic Gaussian-to-occupancy splatting, enabling online open-vocabulary querying and semantic localization in 3D scenes.
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section" id="results">
+      <div class="wide-container">
+        <h2 class="title">Quantitative Results</h2>
+        <figure class="artifact table-image figure-wide">
+          <img src="assets/table2.png" alt="Table II performance comparison on EmbodiedOcc-ScanNet" loading="lazy">
+          <figcaption class="caption">
+            Performance comparison on EmbodiedOcc-ScanNet. Label requirements are reported by task type: <b>Geo.</b> indicates required geometric supervision, and <b>Sem.</b> indicates semantic supervision. We report IoU and per-class mIoU.
+          </figcaption>
+        </figure>
+
+        <figure class="artifact table-image figure-wide">
+          <img src="assets/table3.png" alt="Table III zero-shot generalization results on ReplicaOcc" loading="lazy">
+          <figcaption class="caption">
+            Zero-shot generalization results on the ReplicaOcc benchmark. The evaluation protocol and categorization follow those in Table II.
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="tables-row aligned-row table-pair after-wide-table">
+        <figure class="artifact table-image">
+          <div class="media-box">
+            <img src="assets/table4.png" alt="Table IV geometric IoU comparison of 3DGS-based SLAM backbones" loading="lazy">
+          </div>
+          <figcaption class="caption">
+            Geometric IoU comparison of 3DGS-based SLAM backbones for occupancy prediction on ReplicaOcc and EmbodiedOcc-ScanNet-mini.
+          </figcaption>
+        </figure>
+        <figure class="artifact table-image">
+          <div class="media-box">
+            <img src="assets/table5.png" alt="Table V ablation results" loading="lazy">
+          </div>
+          <figcaption class="caption">
+            We report average results of IoU/mIoU and FPS on ReplicaOcc and EmbodiedOcc-ScanNet. <b>GAGU</b>: Geometrically Anchored Gaussian Updates. <b>G-ini</b>: Geometry-aware initialization.
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section gray">
+      <h2 class="title">Qualitative Results</h2>
+      <div class="figures-row aligned-row figure-pair">
+        <figure class="artifact">
+          <div class="media-box">
+            <a class="preview-link" href="assets/fig3.pdf">
+              <img src="assets/fig3.png" alt="Qualitative occupancy prediction results" loading="lazy">
+            </a>
+          </div>
+          <figcaption class="caption">
+            Qualitative occupancy prediction results. <b>(A)</b> Comparisons with learning-based occupancy predictors on “scene0470” and “room2”. <b>(B)</b> Results of the two 3DGS-SLAM methods with the highest geometric accuracy on “scene0006” and “office0”.
+          </figcaption>
+        </figure>
+        <figure class="artifact">
+          <div class="media-box">
+            <a class="preview-link" href="assets/fig4.pdf">
+              <img src="assets/fig4.png" alt="Open-vocabulary query results on ReplicaOcc" loading="lazy">
+            </a>
+          </div>
+          <figcaption class="caption">
+            Open-vocabulary query results on ReplicaOcc, demonstrating semantic occupancy retrieval for different input vocabulary words.
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+  </main>
+
+  <section class="section gray" id="supplementary">
+    <div class="wide-container">
+      <p class="section-label">Supplementary Material</p>
+      <h2 class="title">Real-World Deployment with RGB-D Sensor</h2>
+      <figure class="artifact figure-tall">
+        <a class="preview-link" href="assets/fig5.pdf">
+          <img src="assets/fig5.png" alt="Real-world open-vocabulary occupancy prediction" loading="lazy">
+        </a>
+        <figcaption class="caption">
+          This figure demonstrates the visualization results of FreeOcc's open-vocabulary occupancy prediction in real-world indoor and outdoor scenes. For real-time results, please refer to the uploaded video.
+        </figcaption>
+      </figure>
+      <div class="demo-video">
+        <video controls muted loop playsinline preload="auto" data-autoplay-on-view data-video-src="assets/demo-clean.mp4">
+          <source src="assets/demo-clean.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wide-container">
+      <h2 class="title">Exploratory Experiments</h2>
+    </div>
+    <div class="tables-row three aligned-row supp-table-row">
+      <figure class="artifact table-image">
+        <div class="media-box">
+          <img src="assets/table6.png" alt="Table VI influence of individual network components" loading="lazy">
+        </div>
+        <figcaption class="caption">
+          Influence of individual network components on EmbodiedOcc-ScanNet. We evaluate different SLAM backbones and open-vocabulary semantic segmentation models under the monocular setting.
+        </figcaption>
+      </figure>
+      <figure class="artifact table-image">
+        <div class="media-box">
+          <img src="assets/table7.png" alt="Table VII performance gap analysis" loading="lazy">
+        </div>
+        <figcaption class="caption">
+          Performance gap analysis under the RGB-D setting on EmbodiedOcc-ScanNet. We evaluate the influence of camera pose accuracy and the type of semantic prediction.
+        </figcaption>
+      </figure>
+      <figure class="artifact table-image">
+        <div class="media-box">
+          <img src="assets/table8.png" alt="Table VIII open-vocabulary validation results" loading="lazy">
+        </div>
+        <figcaption class="caption">
+          Quantitative open-vocabulary validation results on ReplicaOcc. Categories are sorted by frequency from high to low, and mIoU is reported over the top-K categories.
+        </figcaption>
+      </figure>
+    </div>
+    <div class="wide-container">
+      <figure class="artifact figure-wide">
+        <a class="preview-link" href="assets/fig6.pdf">
+          <img src="assets/fig6.png" alt="Real-world red-and-yellow cup experiment" loading="lazy">
+        </a>
+        <figcaption class="caption">
+          Real-world red-and-yellow cup experiment. FreeOcc correctly localizes and distinguishes visually similar objects according to open-vocabulary text queries, demonstrating its applicability to fine-grained real-world scene understanding.
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section gray">
+    <div class="wide-container">
+      <h2 class="title">Benchmark Details</h2>
+      <figure class="artifact figure-medium">
+        <a class="preview-link" href="assets/fig7.pdf">
+          <img src="assets/fig7.png" alt="Representative EmbodiedOcc-ScanNet and ReplicaOcc scenes" loading="lazy">
+        </a>
+        <figcaption class="caption">
+          Visualization of a representative scene from EmbodiedOcc-ScanNet and ReplicaOcc with similar geometric layouts. While EmbodiedOcc-ScanNet contains 11 semantic categories, ReplicaOcc includes 44 categories per scene to maintain semantic diversity during evaluation.
+        </figcaption>
+      </figure>
+      <figure class="artifact figure-wide">
+        <a class="preview-link" href="assets/fig8.pdf">
+          <img src="assets/fig8.png" alt="Visualization results for all ReplicaOcc scenes" loading="lazy">
+        </a>
+        <figcaption class="caption">
+          Visualization results for all ReplicaOcc scenes. In Replica, the true scene nearly touches the ceiling, so we reduced transparency to 0.3 for all ReplicaOcc visualization results.
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wide-container">
+      <h2 class="title">Incremental Visualization Results</h2>
+      <div class="figures-row">
+        <figure class="artifact">
+          <a class="preview-link" href="assets/fig9.pdf">
+            <img src="assets/fig9.png" alt="Incremental results of multi-layer map construction for scene0000" loading="lazy">
+          </a>
+          <figcaption class="caption">
+            This figure displays the incremental results of multi-layer map construction for “scene0000” in ScanNet.
+          </figcaption>
+        </figure>
+        <figure class="artifact">
+          <a class="preview-link" href="assets/fig10.pdf">
+            <img src="assets/fig10.png" alt="Incremental results for outdoor real-world deployment" loading="lazy">
+          </a>
+          <figcaption class="caption">
+            This figure displays the incremental results of multi-layer map construction for an outdoor scene in real-world deployment with RGB-D input.
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="section gray" id="bibtex">
+    <div class="container">
+      <h2 class="title">BibTeX</h2>
+      <pre><code>@inproceedings{jiang2026freeocc,
+  title     = {FreeOcc: Training-Free Embodied Open-Vocabulary Occupancy Prediction},
+  author    = {Jiang, Zeyu and Zhou, Changqing and Zuo, Xingxing and Chen, Changhao},
+  booktitle = {Robotics: Science and Systems (RSS)},
+  year      = {2026}
+}</code></pre>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      FreeOcc project page.
+    </div>
+  </footer>
+  <script>
+    const demoVideo = document.querySelector("[data-autoplay-on-view]");
+
+    function enableViewportAutoplay(video) {
+      if (!("IntersectionObserver" in window)) {
+        return;
+      }
+
+      const videoObserver = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            video.play().catch(() => {});
+            videoObserver.unobserve(video);
+          }
+        }
+      }, { threshold: 0.35 });
+
+      videoObserver.observe(video);
+    }
+
+    async function makeLocalVideoSeekable(video) {
+      const localHosts = new Set(["localhost", "127.0.0.1", "0.0.0.0"]);
+      const sourcePath = video.dataset.videoSrc;
+
+      if (!localHosts.has(window.location.hostname) || !sourcePath || !window.fetch || !window.URL) {
+        return;
+      }
+
+      const response = await fetch(sourcePath, { cache: "force-cache" });
+      if (!response.ok) {
+        throw new Error("Video request failed");
+      }
+
+      const blob = await response.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      video.src = objectUrl;
+      video.load();
+
+      window.addEventListener("pagehide", () => {
+        URL.revokeObjectURL(objectUrl);
+      }, { once: true });
+    }
+
+    if (demoVideo) {
+      makeLocalVideoSeekable(demoVideo)
+        .catch(() => {})
+        .finally(() => {
+          enableViewportAutoplay(demoVideo);
+        });
+    }
+  </script>
+</body>
+</html>
